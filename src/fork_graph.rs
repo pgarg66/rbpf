@@ -25,3 +25,19 @@ pub trait ForkGraph<ForkId>: PartialOrd<ForkId> {
         }
     }
 }
+
+#[allow(dead_code)]
+struct ForkGraphCallback {
+    callback: Box<dyn ForkGraph<ForkId>>,
+}
+
+#[allow(dead_code)]
+impl ForkGraphCallback {
+    fn set_callback(&mut self, cb: impl ForkGraph<ForkId> + 'static) {
+        self.callback = Box::new(cb);
+    }
+
+    fn relationship(&self, other: &ForkId) -> Option<ForkIdRelation> {
+        self.callback.relationship(other)
+    }
+}
